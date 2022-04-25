@@ -23,7 +23,7 @@ export class AppComponent {
   switchSpeechRecognition() {
     if (!this.dictateService.isInitialized()) {
       this.dictateService.init({
-        server: "wss://api.alphacephei.com/asr/en/",
+        server: "ws://localhost:2700",
         onResults: (hyp) => {
           console.log(hyp);
 

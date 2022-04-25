@@ -1,15 +1,11 @@
-import {
-  Injectable,
-  ApplicationRef,
-  Inject,
-  Optional,
-} from '@angular/core';
+import {Injectable} from '@angular/core';
+declare const navigator: any;
 
 @Injectable()
 export class DictateService {
 
   // Defaults
-  readonly SERVER = "wss://api.alphacephei.com/asr/en/";
+  readonly SERVER = "ws://localhost:2700";
   // Send blocks 4 x per second as recommended in the server doc.
   readonly INTERVAL = 250;
   // Path to worker javascript
@@ -53,11 +49,11 @@ export class DictateService {
     this.config.interval = this.config.interval || this.INTERVAL;
     this.config.onReadyForSpeech = this.config.onReadyForSpeech || function() { };
     this.config.onEndOfSpeech = this.config.onEndOfSpeech || function() { };
-    this.config.onResults = this.config.onResults || function(data) { };
-    this.config.onPartialResults = this.config.onPartialResults || function(data) { };
+    this.config.onResults = this.config.onResults || function(_data) { };
+    this.config.onPartialResults = this.config.onPartialResults || function(_data) { };
     this.config.onEndOfSession = this.config.onEndOfSession || function() { };
-    this.config.onEvent = this.config.onEvent || function(e, data) { };
-    this.config.onError = this.config.onError || function(e, data) { };
+    this.config.onEvent = this.config.onEvent || function(_e, _data) { };
+    this.config.onError = this.config.onError || function(_e, _data) { };
 
     this.paused = true;
 
@@ -192,7 +188,7 @@ export class DictateService {
     };
 
     // Start recording only if the socket becomes open
-    this.ws.onopen = (e) => {
+    this.ws.onopen = (_e) => {
       this.intervalKey = setInterval(() => {
         this.exportWorkerData();
       }, this.config.interval);
@@ -210,9 +206,6 @@ export class DictateService {
     // 1005:
     // 1006:
     this.ws.onclose = (e) => {
-      var code = e.code;
-      var reason = e.reason;
-      var wasClean = e.wasClean;
       // The server closes the connection (only?)
       // when its endpointer triggers.
       this.config.onEndOfSession();
